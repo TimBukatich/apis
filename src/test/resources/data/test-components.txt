@@ -1,0 +1,6 @@
+# Test data for parser
+CPU;Test CPU;TestVendor;100.00
+RAM;Test RAM;TestVendor;50.00
+INVALID_LINE
+GPU;Test GPU;TestVendor;-10.00
+SSD;Test SSD;TestVendor;75.00

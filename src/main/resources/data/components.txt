@@ -1,0 +1,28 @@
+# Format: TYPE;NAME;MANUFACTURER;PRICE
+# Lines starting with # and empty lines are skipped.
+# Invalid lines are skipped during parsing; the application continues with the next line.
+
+CPU;Core i7-13700K;Intel;420.50
+CPU;Ryzen 9 7950X;AMD;599.99
+GPU;GeForce RTX 4070 Ti;Nvidia;850.00
+GPU;Radeon RX 7800 XT;AMD;519.00
+RAM;Fury Beast 32GB DDR5;Kingston;180.00
+RAM;Vengeance LPX 16GB DDR4;Corsair;72.50
+MOTHERBOARD;ROG Strix Z790-E;ASUS;349.00
+MOTHERBOARD;TUF Gaming B650-Plus;ASUS;229.99
+SSD;980 Pro 1TB NVMe;Samsung;129.99
+HDD;Barracuda 2TB;Seagate;55.00
+PSU;RM850x 850W;Corsair;139.00
+CASE;H510 Mid Tower;NZXT;99.00
+COOLER;NH-D15;Noctua;109.99
+this is not a valid line at all
+CPU;;Intel;300.00
+RAM;Patriot Viper Steel;Patriot;-50.00
+GPU;Some GPU;;420.00
+SSD;Crucial MX500 500GB;Crucial;abc
+WRONG_TYPE;Some Name;Manufacturer;100.00
+HDD;Toshiba P300 1TB;Toshiba;200000.00
+SSD;Kingston A2000 500GB;Kingston;65.50
+CPU;Core i5-13600K;Intel;310.00
+RAM;Fury Beast 64GB DDR5;Kingston;320.00;EXTRA_FIELD
+;CPU Without Type;Generic;100.00
