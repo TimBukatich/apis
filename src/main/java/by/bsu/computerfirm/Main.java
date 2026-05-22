@@ -12,12 +12,15 @@ import by.bsu.computerfirm.observer.ComponentStore;
 import by.bsu.computerfirm.parser.ComponentParser;
 import by.bsu.computerfirm.reader.ComponentReader;
 import by.bsu.computerfirm.service.ComputerService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.EnumSet;
 import java.util.List;
 
 public final class Main {
 
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
     private static final String DATA_FILE_PATH = "src/main/resources/data/components.txt";
 
     private Main() {
@@ -26,11 +29,11 @@ public final class Main {
     public static void main(String[] args) {
         try {
             List<String> rawLines = ComponentReader.readNonEmptyLines(DATA_FILE_PATH);
-            System.out.println("Lines read from file: " + rawLines.size());
+            LOGGER.info("Lines read from file: {}", rawLines.size());
 
             List<ComputerComponent> components = ComponentParser.parseLines(rawLines);
-            System.out.println("Components parsed successfully: " + components.size());
-            System.out.println("Invalid lines skipped: " + (rawLines.size() - components.size()));
+            LOGGER.info("Components parsed successfully: {}", components.size());
+            LOGGER.info("Invalid lines skipped: {}", rawLines.size() - components.size());
 
             ComponentStore store = new ComponentStore("BSU Computers");
             Client retailClient = new Client("Retail Client");
@@ -44,37 +47,31 @@ public final class Main {
                 store.addNewComponent(component);
             }
 
-            System.out.println();
-            System.out.println("Retail Client received notifications: "
-                    + retailClient.getReceivedNotifications().size());
-            System.out.println("Gaming Client received notifications: "
-                    + gamingClient.getReceivedNotifications().size());
+            LOGGER.info("Retail Client received notifications: {}",
+                    retailClient.getReceivedNotifications().size());
+            LOGGER.info("Gaming Client received notifications: {}",
+                    gamingClient.getReceivedNotifications().size());
 
             Computer baseConfig = buildBaseConfiguration(components);
-            System.out.println();
-            System.out.println("Base configuration:");
-            System.out.println(baseConfig);
-            System.out.println("Total price: " + ComputerService.calculateTotalPrice(baseConfig));
-            System.out.println("Total leaf components: "
-                    + ComputerService.countLeafComponents(baseConfig));
+            LOGGER.info("Base configuration: {}", baseConfig);
+            LOGGER.info("Total price: {}", ComputerService.calculateTotalPrice(baseConfig));
+            LOGGER.info("Total leaf components: {}",
+                    ComputerService.countLeafComponents(baseConfig));
 
             Computer cloned = baseConfig.copy();
-            cloned.setModel("BSU Pro Clone");
+            cloned.setModel("LEHA Clone");
             cloned.setProductionYear(2026);
-            System.out.println();
-            System.out.println("Cloned configuration:");
-            System.out.println(cloned);
+            LOGGER.info("Cloned configuration: {}", cloned);
 
-            System.out.println();
-            System.out.println("Most expensive component in base config: "
-                    + ComputerService.findMostExpensive(baseConfig));
+            LOGGER.info("Most expensive component in base config: {}",
+                    ComputerService.findMostExpensive(baseConfig));
 
             List<ComputerComponent> cpus = ComputerService.findByType(baseConfig, ComponentType.CPU);
-            System.out.println("CPUs in base config: " + cpus.size());
+            LOGGER.info("CPUs in base config: {}", cpus.size());
         } catch (ComponentReaderException e) {
-            System.err.println("Failed to read components: " + e.getMessage());
+            LOGGER.error("Failed to read components: {}", e.getMessage(), e);
         } catch (ComponentValidationException e) {
-            System.err.println("Failed to build configuration: " + e.getMessage());
+            LOGGER.error("Failed to build configuration: {}", e.getMessage(), e);
         }
     }
 

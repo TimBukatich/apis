@@ -5,11 +5,15 @@ import by.bsu.computerfirm.entity.component.ComputerComponent;
 import by.bsu.computerfirm.entity.component.SimpleComponent;
 import by.bsu.computerfirm.exception.InvalidComponentDataException;
 import by.bsu.computerfirm.validator.ComponentValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class ComponentParser {
+
+    private static final Logger LOGGER = LogManager.getLogger(ComponentParser.class);
 
     private static final String FIELD_SEPARATOR = ";";
     private static final int EXPECTED_FIELDS = 4;
@@ -66,21 +70,27 @@ public final class ComponentParser {
             throw new InvalidComponentDataException("Price is out of range: " + price);
         }
 
+        LOGGER.debug("Parsed component: type={}, name={}, manufacturer={}, price={}",
+                type, nameRaw, manufacturerRaw, price);
         return new SimpleComponent(nameRaw, type, price, manufacturerRaw);
     }
 
     public static List<ComputerComponent> parseLines(List<String> lines) {
         List<ComputerComponent> result = new ArrayList<>();
         if (lines == null) {
+            LOGGER.warn("parseLines invoked with null input");
             return result;
         }
+        int skipped = 0;
         for (String line : lines) {
             try {
                 result.add(parseLine(line));
             } catch (InvalidComponentDataException e) {
-
+                skipped++;
+                LOGGER.warn("Skipping invalid line: \"{}\" - {}", line, e.getMessage());
             }
         }
+        LOGGER.info("Parsed {} components, skipped {} invalid lines", result.size(), skipped);
         return result;
     }
 }

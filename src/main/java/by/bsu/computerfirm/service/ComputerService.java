@@ -3,20 +3,27 @@ package by.bsu.computerfirm.service;
 import by.bsu.computerfirm.entity.ComponentType;
 import by.bsu.computerfirm.entity.Computer;
 import by.bsu.computerfirm.entity.component.ComputerComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class ComputerService {
 
+    private static final Logger LOGGER = LogManager.getLogger(ComputerService.class);
+
     private ComputerService() {
     }
 
     public static double calculateTotalPrice(Computer computer) {
         if (computer == null || computer.getRootComponent() == null) {
+            LOGGER.warn("calculateTotalPrice called with empty computer");
             return 0.0d;
         }
-        return calculateComponentPrice(computer.getRootComponent());
+        double total = calculateComponentPrice(computer.getRootComponent());
+        LOGGER.debug("Total price for {}: {}", computer.getModel(), total);
+        return total;
     }
 
     public static double calculateComponentPrice(ComputerComponent component) {
@@ -36,9 +43,12 @@ public final class ComputerService {
     public static List<ComputerComponent> findByType(Computer computer, ComponentType type) {
         List<ComputerComponent> matches = new ArrayList<>();
         if (computer == null || computer.getRootComponent() == null || type == null) {
+            LOGGER.warn("findByType called with insufficient input");
             return matches;
         }
         collectByType(computer.getRootComponent(), type, matches);
+        LOGGER.debug("Found {} components of type {} in {}",
+                matches.size(), type, computer.getModel());
         return matches;
     }
 
@@ -46,14 +56,20 @@ public final class ComputerService {
         if (computer == null || computer.getRootComponent() == null) {
             return 0;
         }
-        return countLeaves(computer.getRootComponent());
+        int count = countLeaves(computer.getRootComponent());
+        LOGGER.debug("Leaf count for {}: {}", computer.getModel(), count);
+        return count;
     }
 
     public static ComputerComponent findMostExpensive(Computer computer) {
         if (computer == null || computer.getRootComponent() == null) {
+            LOGGER.warn("findMostExpensive called with empty computer");
             return null;
         }
-        return findMaxPriceLeaf(computer.getRootComponent(), null);
+        ComputerComponent top = findMaxPriceLeaf(computer.getRootComponent(), null);
+        LOGGER.debug("Most expensive component in {}: {}",
+                computer.getModel(), top == null ? "none" : top.getName());
+        return top;
     }
 
     private static void collectByType(ComputerComponent component,

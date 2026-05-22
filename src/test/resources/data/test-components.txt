@@ -1,4 +1,3 @@
-# Test data for parser
 CPU;Test CPU;TestVendor;100.00
 RAM;Test RAM;TestVendor;50.00
 INVALID_LINE
