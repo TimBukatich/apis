@@ -78,8 +78,7 @@ public final class ComponentParser {
             try {
                 result.add(parseLine(line));
             } catch (InvalidComponentDataException e) {
-                // Per requirement 2: invalid lines are skipped and the application
-                // continues with the next line.
+
             }
         }
         return result;
